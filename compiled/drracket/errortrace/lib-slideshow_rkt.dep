@@ -1,0 +1,1 @@
+("6.12" ("1ed36167db2ee660524e0e73b12d4bda4fa16128" . "31ba852a30ab9002df5352c3e175ceb9fe5fd1f7") #"D:\\Users\\Ty\\Documents\\Racket Programs\\Lyrics\\lib.rkt" (collects #"errortrace" #"errortrace-key.rkt") (collects #"racket" #"runtime-config.rkt") (collects #"slideshow" #"main.rkt") (collects #"syntax" #"parse.rkt"))

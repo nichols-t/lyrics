@@ -1,0 +1,6 @@
+#lang racket
+
+;; Provides a library for song lyrics
+;; Eventually will become a slideshow-based DSL
+
+;; This will allow users to easily input lyrics
