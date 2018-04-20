@@ -5,7 +5,7 @@
 (require "lib-slideshow.rkt"
          "lib.rkt")
 
-(set-back! "black.png")
+(set-back! "cluster.jpg")
 
 (section verse1
          '("When I find myself in times of trouble"
