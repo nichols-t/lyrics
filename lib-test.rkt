@@ -1,36 +1,23 @@
-#lang racket
+#lang lyrics
 
-;; A simple test of the lyrics library
+;; A simple test of the lyrics library/language
 
-(require "lib-slideshow.rkt"
-         "lib.rkt")
+;; Set the background image
+(set-back! "back/cluster.jpg")
 
-(set-back! "cluster.jpg")
+;; Set the title, which will appear in large text
+(title "Ob-La-Di")
 
-(section verse1
-         '("When I find myself in times of trouble"
-           "Mother Mary comes to me"
-           "Speaking words of wisdom"
-           "\"Let it Be\""))
-(section verse2
-         '("And in my hour of darkness"
-           "She is standing right in front of me"
-           "Speaking words of wisdom"
-           "\"Let it Be\""))
-(section chorus
-         '("Let it be, let it be, let it be, let it be"
-           "Whisper words of wisdom"
-           "Let it be"))
-(section verse3
-         '("And when the brokenhearted people"
-           "Living in the world agree"
-           "There will be an answer"
-           "Let it be"))
-(section verse4
-         '("For though they may be parted"
-           "There is still a chance that they will see"
-           "There will be an answer"
-           "Let it be"))
+;; Set the font color - this should affect only the lyrics
+;; because we have already made the font slide
+(set-font-color! "gray")
 
-(song let-it-be (list verse1 verse2 chorus verse3 verse4 chorus chorus))
-(song->slide let-it-be)
+;; If you wanted to change the font color for the title you
+;; should put it before the title declaration
+
+;; At the end, specify the source file
+;; to generate and run the slideshow
+(source "oldold.txt")
+
+;; Also we can do advanced things with the regular slideshow tools
+;; since we have exported those from main.rkt

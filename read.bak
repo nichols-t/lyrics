@@ -1,5 +1,0 @@
-#lang racket
-
-;; Provides a reader-like construct for the Lyrics language
-;; Should allow users to copy and paste in lyrics from the
-;; internet and use the line breaks to parse them into slides

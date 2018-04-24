@@ -1,7 +1,0 @@
-#lang racket
-
-;; Ob-La-Di, Ob-La-Da
-
-(require "lib-slideshow.rkt"
-         "lib.rkt")
-

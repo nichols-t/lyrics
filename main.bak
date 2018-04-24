@@ -7,19 +7,25 @@
 ;; DEPENDENCIES --------------------------------------------------
 
 (require (for-syntax syntax/parse)
-         "lib.rkt")
+         "lib.rkt"
+         slideshow/text)
 
 ;; PROVIDES ------------------------------------------------------
 
 (provide
  section->slide
  song->slide
- set-back!)
+ set-back!
+ set-font-color!
+ source
+ title
+ all-from-out)
 
 ;; SOME DEFAULT VALUES -------------------------------------------
 (current-main-font "Arial")
 (define default-back "eigengrau.png")
 (set-margin! 0)
+(define font-color "white")
 
 ;; FUNCTIONS -----------------------------------------------------
 
@@ -29,7 +35,7 @@
  (lambda (s v-sep c)
    (cc-superimpose
     (scale-to-fit (bitmap default-back) 1024 768 #:mode 'distort)
-    (let ([c (colorize c "white")])
+    (let ([c (colorize c font-color)])
       c))))
 
 ;; (song->slides Song)
@@ -44,14 +50,44 @@
    (λ () (apply values (map (λ (line) (t line)) section)))
    slide))
 
+;; Add a title slide with big text
+(define (title str)
+  (call-with-values
+   (λ () (apply values (map (λ (line) (big (t line))) (list str))))
+   slide))
+
 ;; Change the default background color
 (define (set-back! path)
   (set! default-back path))
 
-;; Brief example song
+;; Change the default font color
+(define (set-font-color! color-str)
+  (set! font-color color-str))
 
-(section a '("Hello" "World" "This" "Is" "A Slide"))
-(section b '("I" "Am" "Another" "Slide"))
-(song ab (list a b))
-#;
-(song->slide ab)
+;; MACROS ------------------------------------------------------------
+
+;; SYNTAX (source String)
+;; SEMANTICS a path for the lyrics
+;; INTERPRETATION give a path to the textfile containing the lyrics
+;; And creates a slideshow from those lyrics
+;; This should be the last line
+
+(define-syntax (source stx)
+  (syntax-parse stx
+    [(_ path)
+     #'(song->slide
+        (string->slides
+                     (port->string
+                      (open-input-file path #:mode 'text))))]))
+
+
+;; This is the stuff we need to turn this into an actual language
+
+;; -----------------------------------------------------------------------------
+(module reader syntax/module-reader
+  lyrics
+  ;; the next three are needed 
+  #:read
+  read
+  #:read-syntax
+  read-syntax)

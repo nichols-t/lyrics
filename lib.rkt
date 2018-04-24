@@ -13,11 +13,45 @@
 (provide
  line
  section
- song)
+ song
+ string->slides)
 
 ;; DEPENDENCIES ---------------------------------------------------
 
 (require (for-syntax syntax/parse))
+
+;; FUNCTIONS -------------------------------------------------------
+
+(define (string->slides str)
+  ;; First, we will parse the string into a list of lines
+  ;; (to-lines String String Listof String)
+  ;; Parses a single string into a list of lines. Empty strings in the
+  ;; output list signify a separate slide
+  (define (to-lines str last-line lines)
+    (cond
+      [(not (non-empty-string? str)) (cons last-line lines)]
+      [else ; If first char is a newline, we create a new thing to add to lines
+       ; Otherwise we just add
+       (define first-str (substring str 0 1))
+       (define rest-str (substring str 1))
+       (if (equal? first-str "\n")
+           (to-lines rest-str "" (cons last-line lines))
+           (to-lines rest-str (string-append last-line first-str) lines))]))
+  ;; This is a list of lines; slides are separated by an empty line
+
+  ;; (to-slides Listof String Listof Listof String)
+  ;; This parses a list of strings into a list of lists of strings
+  (define (to-slides los last-slide slides)
+    (cond
+      [(empty? los) (cons last-slide slides)]
+      [else
+       (define first-line (first los))
+       (define rest-lines (rest los))
+       (if (equal? first-line "")
+           (to-slides rest-lines '() (cons last-slide slides))
+           (to-slides rest-lines (append last-slide (list first-line))
+                      slides))]))
+  (reverse (to-slides (reverse (to-lines str "" '())) '() '())))
 
 ;; MACROS ---------------------------------------------------------
 

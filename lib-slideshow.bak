@@ -1,5 +1,0 @@
-#lang slideshow
-
-;; Provides a library to turn the definitions into slides
-;; Can turn a single section into a slide, or a list of sections
-;; into an entire slideshow

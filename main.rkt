@@ -1,0 +1,93 @@
+#lang slideshow
+
+;; Provides a library to turn the definitions into slides
+;; Can turn a single section into a slide, or a list of sections
+;; into an entire slideshow
+
+;; DEPENDENCIES --------------------------------------------------
+
+(require (for-syntax syntax/parse)
+         "lib.rkt"
+         slideshow/text)
+
+;; PROVIDES ------------------------------------------------------
+
+(provide
+ section->slide
+ song->slide
+ set-back!
+ set-font-color!
+ source
+ title
+ (all-from-out slideshow))
+
+;; SOME DEFAULT VALUES -------------------------------------------
+(current-main-font "Arial")
+(define default-back "eigengrau.png")
+(set-margin! 0)
+(define font-color "white")
+
+;; FUNCTIONS -----------------------------------------------------
+
+;; The slide assembler, which will use the background image
+
+(current-slide-assembler
+ (lambda (s v-sep c)
+   (cc-superimpose
+    (scale-to-fit (bitmap default-back) 1024 768 #:mode 'distort)
+    (let ([c (colorize c font-color)])
+      c))))
+
+;; (song->slides Song)
+;; creates a slideshow out of the given song
+(define (song->slide song)
+  (apply values (map (λ (section) (section->slide section)) song)))
+
+;; (section->slide Section)
+;; turn a single section into a single slide
+(define (section->slide section)
+  (call-with-values
+   (λ () (apply values (map (λ (line) (t line)) section)))
+   slide))
+
+;; Add a title slide with big text
+(define (title str)
+  (call-with-values
+   (λ () (apply values (map (λ (line) (big (t line))) (list str))))
+   slide))
+
+;; Change the default background color
+(define (set-back! path)
+  (set! default-back path))
+
+;; Change the default font color
+(define (set-font-color! color-str)
+  (set! font-color color-str))
+
+;; MACROS ------------------------------------------------------------
+
+;; SYNTAX (source String)
+;; SEMANTICS a path for the lyrics
+;; INTERPRETATION give a path to the textfile containing the lyrics
+;; And creates a slideshow from those lyrics
+;; This should be the last line
+
+(define-syntax (source stx)
+  (syntax-parse stx
+    [(_ path)
+     #'(song->slide
+        (string->slides
+                     (port->string
+                      (open-input-file path #:mode 'text))))]))
+
+
+;; This is the stuff we need to turn this into an actual language
+
+;; -----------------------------------------------------------------------------
+(module reader syntax/module-reader
+  lyrics
+  ;; the next three are needed 
+  #:read
+  read
+  #:read-syntax
+  read-syntax)
