@@ -8,24 +8,49 @@
 
 (require (for-syntax syntax/parse)
          "lib.rkt"
-         slideshow/text)
+         slideshow/text
+         racket/draw)
 
 ;; PROVIDES ------------------------------------------------------
 
 (provide
- section->slide
- song->slide
+ ;; (set-back! Path)
+ ;; Set the background image to whatever is at the given path
  set-back!
+ ;; (font-color)
+ ;; Get the current font color
+ font-color
+ ;; (set-font-color! ColorString)
+ ;; Set the font to the given color
  set-font-color!
+ ;; (set-font-size! N)
+ ;; Set the font to the given size
+ set-font-size!
+ ;; (set-font! FamilyName)
+ ;; Set the font size to the given family name
+ set-font!
+ ;; (source Path.txt)
+ ;; Read lyrics from the textfile at the given path and make the slideshow
  source
+ ;; (title String)
+ ;; Create a title slide with the given string
  title
+ ;; (get-colors)
+ ;; Get a list of the colors you can use
+ get-colors
+ ;; (get-fonts)
+ ;; Get a list of the fonts you can use
+ get-fonts
+ ;; More advanced things can be done with the regular slideshow bindings
  (all-from-out slideshow))
 
 ;; SOME DEFAULT VALUES -------------------------------------------
 (current-main-font "Arial")
-(define default-back "eigengrau.png")
+(current-font-size 36)
+(define default-back "back/black.png")
 (set-margin! 0)
 (define font-color "white")
+(define alignment 'center)
 
 ;; FUNCTIONS -----------------------------------------------------
 
@@ -33,7 +58,7 @@
 
 (current-slide-assembler
  (lambda (s v-sep c)
-   (cc-superimpose
+   (lc-superimpose
     (scale-to-fit (bitmap default-back) 1024 768 #:mode 'distort)
     (let ([c (colorize c font-color)])
       c))))
@@ -60,9 +85,25 @@
 (define (set-back! path)
   (set! default-back path))
 
+;; Change the default font
+(define (set-font! str)
+  (current-main-font str))
+
 ;; Change the default font color
 (define (set-font-color! color-str)
   (set! font-color color-str))
+
+;; Change the default font size
+(define (set-font-size! size)
+  (current-font-size size))
+
+;; Return the list of valid color strings
+(define (get-colors)
+  (send the-color-database get-names))
+
+;; Return the list of valid fonts
+(define (get-fonts)
+  (get-face-list))
 
 ;; MACROS ------------------------------------------------------------
 
@@ -80,13 +121,15 @@
                      (port->string
                       (open-input-file path #:mode 'text))))]))
 
-
 ;; This is the stuff we need to turn this into an actual language
+;; All we do is provide the regular reader, so this is sort of pointless
+;; But now we can type #lang lyrics and this file will be automatically
+;; provided, so that's nice because users don't care about Racket's
+;; module system.
 
-;; -----------------------------------------------------------------------------
+;; ------------------------------------------------------------------
 (module reader syntax/module-reader
   lyrics
-  ;; the next three are needed 
   #:read
   read
   #:read-syntax
