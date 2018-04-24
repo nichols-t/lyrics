@@ -9,7 +9,7 @@
 (title "Ob-La-Di")
 
 ;; Set the font color - this should affect only the lyrics
-;; because we have already made the font slide
+;; because we have already made the title slide
 (set-font-color! "gray")
 
 ;; If you wanted to change the font color for the title you
