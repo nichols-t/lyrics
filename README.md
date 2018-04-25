@@ -4,4 +4,4 @@ An extension to Racket's slideshow DSL that is intended to make creating song ly
 
 See the lib-test.rkt file for details. Essentially, you just need to run make-package.rkt
 to install lyrics as a #lang, then set your formatting stuff before linking to a textfile
-that contains the lyrics for your slideshow
+that contains the lyrics for your slideshow. See the [User Guide](doc.md) for details.
