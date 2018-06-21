@@ -1,6 +1,0 @@
-#lang lyrics
-
-;; I want Rockwell
-(set-font! "Rockwell")
-(set-font-color! "whitesmoke")
-(set-back! "back/blue-bubble.jpeg")

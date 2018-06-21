@@ -71,6 +71,8 @@
 ;; (section->slide Section)
 ;; turn a single section into a single slide
 (define (section->slide section)
+  (lines->slide section)
+  
   (call-with-values
    (λ () (apply values (map (λ (line) (t line)) section)))
    slide))
@@ -120,6 +122,18 @@
         (string->slides
                      (port->string
                       (open-input-file path #:mode 'text))))]))
+
+;; SYNTAX (line->slide String ...)
+;; SEMANTICS constructs a slide with the given strings as lines
+;; Currently broke because I can't figure out how to call this properly
+;; For a list of stuff
+
+(define-syntax (lines->slide stx)
+  (syntax-parse stx
+    [(_ str ...)
+     #'(call-with-values
+        (λ () (apply values (map (λ (line) (t line)) str ...)))
+        slide)]))
 
 ;; This is the stuff we need to turn this into an actual language
 ;; All we do is provide the regular reader, so this is sort of pointless
