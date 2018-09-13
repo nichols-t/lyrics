@@ -9,14 +9,13 @@
 (title "Ob-La-Di")
 
 ;; Set the font color - this should affect only the lyrics
-<<<<<<< HEAD
+
 ;; because we have already made the font slide
 (set-font-color! "steelblue")
 (set-font! "Calibri")
-=======
+
 ;; because we have already made the title slide
 (set-font-color! "gray")
->>>>>>> 6a26d9f16024a1148f81973a40419bcd2317f01e
 
 ;; If you wanted to change the font color for the title you
 ;; should put it before the title declaration

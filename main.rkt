@@ -9,7 +9,8 @@
 (require (for-syntax syntax/parse)
          "lib.rkt"
          slideshow/text
-         racket/draw)
+         racket/draw
+         values+)
 
 ;; PROVIDES ------------------------------------------------------
 
@@ -41,6 +42,9 @@
  ;; (get-fonts)
  ;; Get a list of the fonts you can use
  get-fonts
+ ;; Set the text to be center or top aligned
+ align-top!
+ align-center!
  ;; More advanced things can be done with the regular slideshow bindings
  (all-from-out slideshow))
 
@@ -51,6 +55,8 @@
 (set-margin! 0)
 (define font-color "white")
 (define alignment 'center)
+(define para-width (- 1024 40))
+(define para-align 'center)
 
 ;; FUNCTIONS -----------------------------------------------------
 
@@ -58,7 +64,7 @@
 
 (current-slide-assembler
  (lambda (s v-sep c)
-   (lc-superimpose
+   (ct-superimpose
     (scale-to-fit (bitmap default-back) 1024 768 #:mode 'distort)
     (let ([c (colorize c font-color)])
       c))))
@@ -71,17 +77,11 @@
 ;; (section->slide Section)
 ;; turn a single section into a single slide
 (define (section->slide section)
-  (lines->slide section)
-  
-  (call-with-values
-   (λ () (apply values (map (λ (line) (t line)) section)))
-   slide))
+  (lines->slide section))
 
 ;; Add a title slide with big text
 (define (title str)
-  (call-with-values
-   (λ () (apply values (map (λ (line) (big (t line))) (list str))))
-   slide))
+  (slide #:layout alignment (big (t str))))
 
 ;; Change the default background color
 (define (set-back! path)
@@ -107,6 +107,15 @@
 (define (get-fonts)
   (get-face-list))
 
+;; Sets the alignment of the text to be top-aligned
+(define (align-top!)
+  (set! alignment 'top))
+
+;; Sets the alignment of the text to be center-aligned
+(define (align-center!)
+  (set! alignment 'center))
+
+
 ;; MACROS ------------------------------------------------------------
 
 ;; SYNTAX (source String)
@@ -125,14 +134,12 @@
 
 ;; SYNTAX (line->slide String ...)
 ;; SEMANTICS constructs a slide with the given strings as lines
-;; Currently broke because I can't figure out how to call this properly
-;; For a list of stuff
 
 (define-syntax (lines->slide stx)
   (syntax-parse stx
-    [(_ str ...)
-     #'(call-with-values
-        (λ () (apply values (map (λ (line) (t line)) str ...)))
+    [(_ lines)
+     #'(call-with-values+
+        (λ () (apply values+ (map (λ (line) (t line)) lines) #:layout alignment))
         slide)]))
 
 ;; This is the stuff we need to turn this into an actual language

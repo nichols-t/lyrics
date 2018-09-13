@@ -8,6 +8,5 @@ that contains the lyrics for your slideshow. See the [User Guide](doc.md) for de
 
 ## Future Roadmap
 
-I would like to implement the following features:  
-* Align text to top or center of slide
+I would like to implement the following features:
 * GUI program/editor
